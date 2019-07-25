@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
+const cookie = require('koa-cookie').default;
 const mongoose = require('mongoose');
 
 const DB_URL = 'mongodb://localhost:27017/boss-recruit';
@@ -14,15 +15,16 @@ const User = mongoose.model('user', new mongoose.Schema({
   age: { type: Number, require: true },
 }));
 
-User.create({
-  userName: '',
-  age: 24,
-});
+// User.create({ 
+//   userName: '',
+//   age: 24,
+// });
 
 const app = new Koa();
 const router = new Router();
 
 router
+  .use(cookie())
   .get('/', async (ctx, next) => {
     const body = `<h3>Koa App</h3>`;
 

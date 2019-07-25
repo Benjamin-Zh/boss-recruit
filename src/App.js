@@ -1,28 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import './App.css';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import './App.scss';
+import './styles/common.scss';
 
 
-function mapStateToProps(state) {
-  return { state };
-}
-
-const actionCreators = {
-  add: () => ({ type: 'ADD' }),
-  minus: () => ({ type: 'MINUS' }),
-};
-
-@connect(mapStateToProps, actionCreators)
-class App {
+class App extends React.Component {
   render() {
-    const { props } = this;
-
     return (
-      <div className="App">
-        {props.state}
-        <button onClick={props.add}>add</button>
-        <button onClick={props.minus}>minus</button>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact component={Index} />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }

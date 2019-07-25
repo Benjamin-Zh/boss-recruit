@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.icon {
+  width: 60%;
+  height: 60%;
+}
+
+.shadow {
+  filter: drop-shadow(0 10px 10px rgba(#000, .1));
+}
+
+$pic-list: 'login', 'register', 'job';
+
+@each $pic in $pic-list {
+  .pic-#{$pic} {
+    background: url(./images/#{$pic}.png) no-repeat center/contain;
+  }
+}
