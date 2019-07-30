@@ -6,7 +6,22 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use(
-  response => response.data,
+  response => {
+    const { data } = response;
+
+    if (!data.success) {
+      const error = new Error(data.message);
+
+      Object.defineProperty(error, 'code', {
+        enumerable: false,
+        value: data.code,
+      });
+
+      return Promise.reject(error);
+    }
+
+    return response.data;
+  },
   error => Promise.reject(error),
 );
 

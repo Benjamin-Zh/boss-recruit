@@ -1,0 +1,27 @@
+.container {
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+}
+
+.success-text {
+  font-size: 36px;
+  font-weight: bolder;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+}
+
+.welcome-text {
+  font-size: 16px;
+}
+
+.panel {
+  width: 100%;
+}
