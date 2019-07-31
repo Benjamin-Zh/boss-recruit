@@ -18,6 +18,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   register: userInfo => dispatch(actions.register(userInfo)),
   setUserInfo: userInfo => dispatch(setUserInfo(userInfo)),
+  resetError: () => dispatch(actions.resetError()),
 });
 const successRouteTransitionDuration = 800;
 
@@ -34,17 +35,24 @@ class Register extends React.Component {
     };
 
     this.state = {
-      ...this.initialForm,
+      form: { ...this.initialForm },
+      userInfo: null,
     };
 
     this.handleLoginClick = this.handleLoginClick.bind(this);
     this.handleRegisterClick = this.handleRegisterClick.bind(this);
     this.handleCompleteProfileClick = this.handleCompleteProfileClick.bind(this);
     this.handleBack = this.handleBack.bind(this);
+    this.resetForm = this.resetForm.bind(this);
   }
 
   handleChange(key, value) {
-    this.setState({ [key]: value });
+    this.setState(prevState => ({
+      form: {
+        ...prevState.form,
+        [key]: value,
+      },
+    }));
   }
 
   handleRoleChange(userType) {
@@ -53,13 +61,11 @@ class Register extends React.Component {
 
   async handleRegisterClick() {
     try {
-      const userInfo = await this.props.register(this.state);
+      const userInfo = await this.props.register(this.state.form);
 
-      this.props.setUserInfo(userInfo);
-      this.props.history.push('/register/success');
-      setTimeout(() => {
-        this.setState(this.initialForm);
-      }, successRouteTransitionDuration);
+      this.setState({ userInfo });
+      this.props.history.replace('/register/success');
+      setTimeout(this.resetForm, successRouteTransitionDuration);
     } catch (err) { }
   }
 
@@ -68,17 +74,26 @@ class Register extends React.Component {
   }
 
   handleCompleteProfileClick() {
-    console.log(124);
+    this.props.setUserInfo(this.userInfo);
   }
 
   handleBack() {
-    this.props.history.goBack();
+    this.props.history.replace('/register');
+  }
+
+  resetForm() {
+    this.setState({ form: this.initialForm });
+    this.props.resetError();
+  }
+
+  componentWillUnmount() {
+    this.resetForm();
   }
 
   render() {
-    const { registerState } = this.props;
-    const { ui } = registerState;
-    const { userType } = this.state;
+    const { ui } = this.props.registerState;
+    const { form } = this.state;
+    const { userType } = form;
     const errorMessage = formatError(ui.error);
 
     return (
@@ -95,21 +110,21 @@ class Register extends React.Component {
               disabled={ui.loading}
               placeholder="Your Username"
               onChange={val => this.handleChange('userName', val)}
-              value={this.state.userName}
+              value={form.userName}
             >Username</InputItem>
             <InputItem
               type="password"
               disabled={ui.loading}
               placeholder="Your Password"
               onChange={val => this.handleChange('password', val)}
-              value={this.state.password}
+              value={form.password}
             >Password</InputItem>
             <InputItem
               type="password"
               disabled={ui.loading}
               placeholder="Confirm Password"
               onChange={val => this.handleChange('confirmPassword', val)}
-              value={this.state.confirmPassword}
+              value={form.confirmPassword}
             >Password</InputItem>
           </List>
           <List renderHeader="Role">
@@ -152,6 +167,7 @@ class Register extends React.Component {
         </div>
 
         <RegisterSuccess
+          userInfo={this.state.userInfo || {}}
           onBack={this.handleBack}
           onCompleteProfile={this.handleCompleteProfileClick}
           transitionDuration={successRouteTransitionDuration}

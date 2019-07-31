@@ -5,11 +5,17 @@ import { sleep } from '../../utils';
 // action types
 export const SET_ERROR = 'SET_ERROR';
 export const SET_LOADING = 'SET_LOADING';
-// export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
 // action creators
 function setError(errorMessage, code) {
-  const error  = new Error(errorMessage);
+  if (errorMessage === null) {
+    return {
+      type: SET_ERROR,
+      payload: { error: null },
+    };
+  }
+
+  const error = new Error(errorMessage);
 
   if (typeof code !== undefined) {
     Object.defineProperty(error, 'code', {
@@ -31,29 +37,37 @@ function setLoading(state) {
   };
 }
 
-// function registerSuccess(userInfo) {
-//   return {
-//     type: REGISTER_SUCCESS,
-//     payload: { userInfo },
-//   };
-// }
+export function resetError() {
+  return setError(null);
+}
 
 export function register(userInfo) {
-  const {
-    userName, password, confirmPassword, type,
-  } = userInfo;
-
-  // if (!userName) return setError('用户名不能为空');
-  // if (userName.length < 6 || userName.length > 12) return setError('用户名长度为 6 - 12 个字符');
-  // if (!password) return setError('密码不能为空');
-  // if (password.length < 6 || password.length > 12) return setError('密码长度为 6 - 12 个字符');
-  // if (!confirmPassword) return setError('密码确认不能为空');
-  // if (password !== confirmPassword) return setError('两次密码输入不一致');
-
   return async dispatch => {
-    dispatch(setLoading(true));
+    let {
+      userName, password, confirmPassword, type,
+    } = userInfo;
+  
+    userName = userName.trim();
+    password = password.trim();
+    confirmPassword = confirmPassword.trim();
 
+    // form validation
     try {
+      if (!userName) throw new Error('用户名不能为空');
+      if (userName.length < 6 || userName.length > 12) throw new Error('用户名长度为 6 - 12 个字符');
+      if (!password) throw new Error('密码不能为空');
+      if (password.length < 6 || password.length > 12) throw new Error('密码长度为 6 - 12 个字符');
+      if (!confirmPassword) throw new Error('密码确认不能为空');
+      if (password !== confirmPassword) throw new Error('两次密码输入不一致');
+      dispatch(resetError());
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw new Error(err.message);
+    }
+
+    // call register service
+    try {
+      dispatch(setLoading(true));
       const userInfo = await http.post('/user/register', { userName, password, type });
 
       await sleep(1000);

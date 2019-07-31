@@ -10,7 +10,7 @@ const stateShape = {
   register: registerInitialState,
 };
 
-console.log('state shape:', stateShape);
+console.log('🧬state shape:', stateShape);
 
 export default combineReducers({
   user,

@@ -6,16 +6,29 @@ import { Flex, Button, WhiteSpace, WingBlank } from 'antd-mobile';
 import styles from './register-success.module.scss';
 
 
-const duration = 600;
+const duration = 800;
 const defaultStyle = {
   transition: `transform ${duration}ms cubic-bezier(0.19, 1, 0.22, 1)`,
   transform: 'translate3D(0, 100%, 0)',
+  boxShadow: '0 0 0 transparent',
 };
 const transitionStyles = {
-  entering: { transform: 'translate3D(0, 0, 0)' },
-  entered: { transform: 'translate3D(0, 0, 0)' },
-  exiting: { transform: 'translate3D(0, 100%, 0)' },
-  exited: { transform: 'translate3D(0, 100%, 0)' },
+  entering: {
+    transform: 'translate3D(0, 0, 0)',
+    boxShadow: '0 0 300px rgba(0, 0, 0, .5)',
+  },
+  entered: {
+    transform: 'translate3D(0, 0, 0)',
+    boxShadow: '0 0 300px rgba(0, 0, 0, .5)',
+  },
+  exiting: {
+    transform: 'translate3D(0, 100%, 0)',
+    boxShadow: '0 0 0 transparent',
+  },
+  exited: {
+    transform: 'translate3D(0, 100%, 0)',
+    boxShadow: '0 0 0 transparent',
+  },
 };
 const Icon = (
   <svg
@@ -32,43 +45,41 @@ const Icon = (
   </svg>
 );
 
-function RegisterSuccess(props) {
-  return (
-    <Route path="/register/success" children={({ match }) => (
-      <Transition in={Boolean(match)} timeout={duration}>
-        {state => (
-          <Flex
-            className={styles.container}
-            style={{ ...defaultStyle, ...transitionStyles[state] }}
-            direction="column"
-          >
-            {Icon}
-            <WhiteSpace />
-            <span className={styles['success-text']}>Great Success</span>
-            <WhiteSpace size="xs" />
-            <span className={styles['welcome-text']}>Welcome abroad, xxx!</span>
-            <WhiteSpace size="xl" />
-            <WhiteSpace size="xl" />
-            <WhiteSpace size="xl" />
-            <WhiteSpace size="xl" />
-            <WhiteSpace size="xl" />
-            <div className={styles.panel}>
-              <WingBlank>
-                <Button
-                  type="primary"
-                  onClick={props.onCompleteProfile}
-                >Complete Your Profile</Button>
-                <WhiteSpace />
-                <Button
-                  onClick={props.onBack}
-                >Back</Button>
-              </WingBlank>
-            </div>
-          </Flex>
-        )}
-      </Transition>
-    )} />
-  );
-}
+const RegisterSuccess = props => (
+  <Route path="/register/success" children={({ match }) => (
+    <Transition in={Boolean(match)} timeout={duration}>
+      {state => (
+        <Flex
+          className={styles.container}
+          style={{ ...defaultStyle, ...transitionStyles[state] }}
+          direction="column"
+        >
+          {Icon}
+          <WhiteSpace />
+          <span className={styles['success-text']}>Great Success</span>
+          <WhiteSpace size="xs" />
+          <span className={styles['welcome-text']}>Welcome abroad, {props.userInfo.userName}!</span>
+          <WhiteSpace size="xl" />
+          <WhiteSpace size="xl" />
+          <WhiteSpace size="xl" />
+          <WhiteSpace size="xl" />
+          <WhiteSpace size="xl" />
+          <div className={styles.panel}>
+            <WingBlank>
+              <Button
+                type="primary"
+                onClick={props.onCompleteProfile}
+              >Complete Your Profile</Button>
+              <WhiteSpace />
+              <Button
+                onClick={props.onBack}
+              >Back</Button>
+            </WingBlank>
+          </div>
+        </Flex>
+      )}
+    </Transition>
+  )} />
+);
 
 export default RegisterSuccess;
