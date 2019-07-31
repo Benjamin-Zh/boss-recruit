@@ -1,5 +1,6 @@
 import http from '../../utils/http';
 import { sleep } from '../../utils';
+import ERROR_TYPES from './constants/errorTypes';
 
 
 // action types
@@ -44,21 +45,21 @@ export function resetError() {
 export function register(userInfo) {
   return async dispatch => {
     let {
-      userName, password, confirmPassword, type,
+      userName, password, confirmPassword, userType,
     } = userInfo;
-  
+
     userName = userName.trim();
     password = password.trim();
     confirmPassword = confirmPassword.trim();
 
     // form validation
     try {
-      if (!userName) throw new Error('用户名不能为空');
-      if (userName.length < 6 || userName.length > 12) throw new Error('用户名长度为 6 - 12 个字符');
-      if (!password) throw new Error('密码不能为空');
-      if (password.length < 6 || password.length > 12) throw new Error('密码长度为 6 - 12 个字符');
-      if (!confirmPassword) throw new Error('密码确认不能为空');
-      if (password !== confirmPassword) throw new Error('两次密码输入不一致');
+      if (!userName) throw new Error('Empty username');
+      if (userName.length < 6 || userName.length > 12) throw new Error('Username required 6 - 12 characters');
+      if (!password) throw new Error('Empty password');
+      if (password.length < 6 || password.length > 12) throw new Error('Password required 6 - 12 characters');
+      if (!confirmPassword) throw new Error('Empty confirm password');
+      if (password !== confirmPassword) throw new Error('Password and confirm password not same');
       dispatch(resetError());
     } catch (err) {
       dispatch(setError(err.message));
@@ -68,13 +69,13 @@ export function register(userInfo) {
     // call register service
     try {
       dispatch(setLoading(true));
-      const userInfo = await http.post('/user/register', { userName, password, type });
+      const userInfo = await http.post('/user/register', { userName, password, userType });
 
       await sleep(1000);
 
       return userInfo.data;
     } catch (err) {
-      dispatch(setError('注册失败，请稍后重试'));
+      dispatch(setError(ERROR_TYPES[err.code] || 'Register fail, try it later'));
       throw err;
     } finally {
       dispatch(setLoading(false));

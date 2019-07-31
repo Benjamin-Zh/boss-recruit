@@ -56,7 +56,12 @@ class Register extends React.Component {
   }
 
   handleRoleChange(userType) {
-    this.setState({ userType });
+    this.setState(prevState => ({
+      form: {
+        ...prevState.form,
+        userType,
+      },
+    }));
   }
 
   async handleRegisterClick() {

@@ -1,4 +1,6 @@
 const BaseController = require('./base');
+const { getModel } = require('../model');
+const ERROR_TYPES = require('../constants/errorTypes');
 
 
 class UserController extends BaseController {
@@ -10,7 +12,25 @@ class UserController extends BaseController {
   }
 
   async register(ctx, next) {
-    this.success(ctx, { userName: 'Remiel', userId: 10001, userType: 0 });
+    const User = getModel('User');
+    const { body: userInfo } = ctx.request;
+
+    if (await User.findOne({ userName: userInfo.userName })) {
+      return this.fail(ctx, ERROR_TYPES.USER.USERNAME_REPEAT);
+    }
+
+    const user = await User.create({
+      userName: userInfo.userName,
+      password: userInfo.password,
+      userType: Boolean(userInfo.userType),
+    });
+
+    this.success(ctx, {
+      userName: user.userName,
+      userId: user._id,
+      userType: user.userType,
+    });
+
     await next();
   }
 
