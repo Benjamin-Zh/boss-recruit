@@ -14,7 +14,12 @@ class UserController extends BaseController {
   }
 
   async getUserInfo(ctx, next) {
-    this.success(ctx, { userName: 'hi' });
+    const { userInfo } = ctx.session;
+    const body = userInfo
+      ? { ...userInfo, isLogin: true }
+      : { isLogin: false };
+
+    this.success(ctx, body);
     await next();
   }
 
@@ -61,12 +66,15 @@ class UserController extends BaseController {
     const { password: encryptedPassword } = encryptPassword(password, user.salt);
 
     if (encryptedPassword === user.password) {
-      this.success(ctx, {
+      const userInfo = {
         userName: user.userName,
         userId: user._id,
         userType: user.userType,
         hasDetail: user.hasDetail,
-      });
+      };
+
+      ctx.session.userInfo = userInfo;
+      this.success(ctx, userInfo);
     } else {
       this.fail(ctx, ERROR_TYPES.USER.INVALID_PASSWORD);
     }

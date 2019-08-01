@@ -9,7 +9,7 @@ router
   .use(cookie())
 
   // user
-  .get('/user/info', userController.getUserInfo)
+  .get('/user', userController.getUserInfo)
   .post('/user/login', userController.login)
   .post('/user/register', userController.register);
 

@@ -11,6 +11,8 @@ const sessionConfig = {
   key: 'boss-recruit',
 };
 
+app.keys = ['boss recruit server'];
+
 app
   .use(bodyParser())
   .use(session(sessionConfig, app))

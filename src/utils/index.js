@@ -74,3 +74,11 @@ export function getLoggedUserRedirectPath(userInfo) {
 
   return `/complete-profile/${SUB_PATHES[userInfo.userType]}`;
 }
+
+/**
+ * Get Component Display Name
+ * @param {React.Component} component 
+ */
+export function getComponetDisplayName(component) {
+  return component.displayName || component.name || 'Anonymous Component';
+}

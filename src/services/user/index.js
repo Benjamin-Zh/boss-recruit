@@ -1,6 +1,10 @@
 import http from '../../utils/http';
-import { LOGIN, REGISTER } from './constants';
+import { USER_INFO, LOGIN, REGISTER } from './constants';
 
+
+export function getUserInfo() {
+  return http.get(USER_INFO);
+}
 
 export function login({ userName, password }) {
   return http.post(LOGIN, { userName, password });
