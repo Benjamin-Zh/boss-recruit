@@ -1,33 +1,17 @@
-import http from '../../utils/http';
-import { sleep } from '../../utils';
+import { makeError } from '../../utils';
 import ERROR_TYPES from './constants/errorTypes';
+import * as services from '../../services/user';
 
 
 // action types
-export const SET_ERROR = 'SET_ERROR';
+export const SET_ERROR = 'SET_ERROR_REGISTER';
 export const SET_LOADING = 'SET_LOADING';
 
 // action creators
-function setError(errorMessage, code) {
-  if (errorMessage === null) {
-    return {
-      type: SET_ERROR,
-      payload: { error: null },
-    };
-  }
-
-  const error = new Error(errorMessage);
-
-  if (typeof code !== undefined) {
-    Object.defineProperty(error, 'code', {
-      enumerable: false,
-      value: code,
-    });
-  }
-
+function setError(message, code) {
   return {
     type: SET_ERROR,
-    payload: { error },
+    payload: { error: makeError(message, code) },
   };
 }
 
@@ -55,7 +39,7 @@ export function register(userInfo) {
     // form validation
     try {
       if (!userName) throw new Error('Empty username');
-      if (userName.length < 6 || userName.length > 12) throw new Error('Username required 6 - 12 characters');
+      if (userName.length < 5 || userName.length > 12) throw new Error('Username required 5 - 12 characters');
       if (!password) throw new Error('Empty password');
       if (password.length < 6 || password.length > 12) throw new Error('Password required 6 - 12 characters');
       if (!confirmPassword) throw new Error('Empty confirm password');
@@ -63,17 +47,15 @@ export function register(userInfo) {
       dispatch(resetError());
     } catch (err) {
       dispatch(setError(err.message));
-      throw new Error(err.message);
+      throw err;
     }
 
     // call register service
     try {
       dispatch(setLoading(true));
-      const userInfo = await http.post('/user/register', { userName, password, userType });
+      const { data: userInfo } = await services.register({ userName, password, userType });
 
-      await sleep(1000);
-
-      return userInfo.data;
+      return userInfo;
     } catch (err) {
       dispatch(setError(ERROR_TYPES[err.code] || 'Register fail, try it later'));
       throw err;

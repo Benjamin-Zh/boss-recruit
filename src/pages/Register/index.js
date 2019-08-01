@@ -6,7 +6,7 @@ import RegisterSuccess from './components/RegisterSuccess';
 import * as actions from './actions';
 import { setUserInfo } from '../../actions/user';
 import { USER_TYPE } from '../../constants';
-import { formatError } from '../../utils';
+import { formatError, getLoggedUserRedirectPath } from '../../utils';
 
 import styles from './register.module.scss';
 
@@ -79,7 +79,10 @@ class Register extends React.Component {
   }
 
   handleCompleteProfileClick() {
-    this.props.setUserInfo(this.userInfo);
+    const { userInfo } = this.state;
+
+    this.props.setUserInfo(userInfo);
+    this.props.history.push(getLoggedUserRedirectPath(userInfo));
   }
 
   handleBack() {
@@ -147,7 +150,7 @@ class Register extends React.Component {
           <WhiteSpace />
           {
             errorMessage &&
-            <Flex justify="center" align="center" className={styles['error-message']}>
+            <Flex justify="center" align="center" className="error-message">
               {errorMessage}
             </Flex>
           }

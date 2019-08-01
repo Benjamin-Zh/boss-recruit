@@ -1,3 +1,6 @@
+import { USER_TYPE } from '../constants';
+
+
 /**
  * Create Reducer
  * @param {Object} initialState 
@@ -11,6 +14,24 @@ export function createReducer(initialState, handlers) {
 
     return state;
   }
+}
+
+/**
+ * Make Error
+ * @param {String} message 
+ * @param {Number} code 
+ */
+export function makeError(message, code = -1) {
+  if (message === null) return null;
+
+  const error = new Error(message);
+
+  Object.defineProperty(error, 'code', {
+    enumerable: false,
+    value: code,
+  });
+
+  return error;
 }
 
 /**
@@ -37,4 +58,19 @@ export function formatError(error, withCode) {
  */
 export function sleep(duration) {
   return new Promise(resolve => setTimeout(resolve, duration));
+}
+
+/**
+ * Get Logged User Redirect Path
+ * @param {Object} userInfo 
+ */
+export function getLoggedUserRedirectPath(userInfo) {
+  if (userInfo.hasDetail) return '/profile';
+
+  const SUB_PATHES = {
+    [USER_TYPE.GENIUS]: 'genies',
+    [USER_TYPE.BOSS]: 'boss',
+  };
+
+  return `/complete-profile/${SUB_PATHES[userInfo.userType]}`;
 }

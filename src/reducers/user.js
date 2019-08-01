@@ -7,6 +7,7 @@ export const initialState = {
   userName: '',
   userType: null,
   isLogin: false,
+  hasDetail: false,
 };
 
 export default createReducer(initialState, {

@@ -1,6 +1,7 @@
 const BaseController = require('./base');
 const { getModel } = require('../model');
 const ERROR_TYPES = require('../constants/errorTypes');
+const { encryptPassword } = require('../utils');
 
 
 class UserController extends BaseController {
@@ -9,6 +10,12 @@ class UserController extends BaseController {
 
     this.getUserInfo = this.getUserInfo.bind(this);
     this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+  }
+
+  async getUserInfo(ctx, next) {
+    this.success(ctx, { userName: 'hi' });
+    await next();
   }
 
   async register(ctx, next) {
@@ -16,26 +23,54 @@ class UserController extends BaseController {
     const { body: userInfo } = ctx.request;
 
     if (await User.findOne({ userName: userInfo.userName })) {
-      return this.fail(ctx, ERROR_TYPES.USER.USERNAME_REPEAT);
+      this.fail(ctx, ERROR_TYPES.USER.USERNAME_REPEAT);
+
+      return await next();
     }
 
+    const { salt, password } = encryptPassword(userInfo.password);
     const user = await User.create({
       userName: userInfo.userName,
-      password: userInfo.password,
+      password,
+      salt,
       userType: Boolean(userInfo.userType),
+      hasDetail: false,
     });
 
     this.success(ctx, {
       userName: user.userName,
       userId: user._id,
       userType: user.userType,
+      hasDetail: false,
     });
 
     await next();
   }
 
-  async getUserInfo(ctx, next) {
-    this.success(ctx, { nickname: 'hi' });
+  async login(ctx, next) {
+    const User = getModel('User');
+    const { userName, password } = ctx.request.body;
+    const user = await User.findOne({ userName });
+
+    if (!user) {
+      this.fail(ctx, ERROR_TYPES.USER.USER_DO_NOT_EXIST);
+
+      return await next();
+    }
+    
+    const { password: encryptedPassword } = encryptPassword(password, user.salt);
+
+    if (encryptedPassword === user.password) {
+      this.success(ctx, {
+        userName: user.userName,
+        userId: user._id,
+        userType: user.userType,
+        hasDetail: user.hasDetail,
+      });
+    } else {
+      this.fail(ctx, ERROR_TYPES.USER.INVALID_PASSWORD);
+    }
+
     await next();
   }
 }
