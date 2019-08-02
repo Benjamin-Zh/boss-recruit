@@ -1,4 +1,6 @@
+import { createFormField } from 'rc-form';
 import { USER_TYPE } from '../constants';
+import mapValues from 'lodash/mapValues';
 
 
 /**
@@ -100,4 +102,20 @@ export function getLoggedUserRedirectPath(userInfo) {
  */
 export function getComponetDisplayName(component) {
   return component.displayName || component.name || 'Anonymous Component';
+}
+
+/**
+ * Wrap To RC Form Fields
+ * @param {Object} fields 
+ */
+export function wrapToRCFormFields(fields) {
+  return mapValues(fields, field => createFormField({ value: field }));
+}
+
+/**
+ * Map Fields To RC Form Fields
+ * @param {Object} fields 
+ */
+export function mapFieldsToRCFormFields(fields) {
+  return mapValues(fields, field => createFormField(field));
 }

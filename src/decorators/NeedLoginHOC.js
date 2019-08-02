@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { setLoginRedirectPath } from '../actions/system';
-import { getComponetDisplayName } from '../utils';
+import renameWrapperComponent from './renameWrapperComponent';
 
 
 const mapStateToProps = state => ({
@@ -10,7 +10,9 @@ const mapStateToProps = state => ({
 });
 
 export default WrappedComponent => {
+
   @connect(mapStateToProps)
+  @renameWrapperComponent('NeedLogin', WrappedComponent)
   class NeedLoginHOC extends React.Component {
     render() {
       if (this.props.userState.isLogin) {
@@ -24,8 +26,6 @@ export default WrappedComponent => {
       );
     }
   }
-
-  NeedLoginHOC.displayName = `HOC(${getComponetDisplayName(WrappedComponent)})`;
 
   return NeedLoginHOC;
 };

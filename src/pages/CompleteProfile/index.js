@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { NavBar } from 'antd-mobile';
 import CompleteProfileGenius from  './components/Genius';
 import CompleteProfileBoss from  './components/Boss';
+import Form from './components/FormHOC';
 import needLogin from '../../decorators/NeedLoginHOC';
 import { USER_TYPE } from '../../constants';
 
@@ -18,6 +19,13 @@ const mapStateToProps = state => ({
 @needLogin
 @connect(mapStateToProps)
 class CompleteProfile extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.geniusForm = Form(USER_TYPE.GENIUS)(CompleteProfileGenius);
+    this.bossForm = Form(USER_TYPE.BOSS)(CompleteProfileBoss);
+  }
+
   render() {
     const pathType = this.props.location.pathname.split('/').pop();
     const userType = typeof USER_TYPE[this.props.userState.userType] === 'string'
@@ -28,15 +36,24 @@ class CompleteProfile extends React.Component {
       return <Redirect to="/" />;
     }
 
-    if (userType !== pathType) {
-      return <Redirect to={`${this.props.match.path}/${userType}`} />;
-    }
+    // if (userType !== pathType) {
+    //   return <Redirect to={`${this.props.match.path}/${userType}`} />;
+    // }
 
     return (
       <div className="page-container">
-        <NavBar mode="dark" className={styles['nav-bar']}>Complete Profile</NavBar>
-        <Route path="/complete-profile/genies" component={CompleteProfileGenius} />
-        <Route path="/complete-profile/boss" component={CompleteProfileBoss} />
+        <NavBar
+          mode="dark"
+          className={styles['nav-bar']}
+        >Complete Profile</NavBar>
+        <Route
+          path="/complete-profile/genius"
+          component={this.geniusForm}
+        />
+        <Route
+          path="/complete-profile/boss"
+          component={this.bossForm}
+        />
       </div>
     );
   }
