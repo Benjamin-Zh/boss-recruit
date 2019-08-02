@@ -19,10 +19,20 @@ import styles from './complete-profile-boss.module.scss';
 export const DEFAULT_SALARY_RANGE = [10, 20];
 
 class CompleteProfileBoss extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit() {
+    this.props.onSubmit(this.props.form);
+  }
+
   render() {
-    const { getFieldValue, getFieldDecorator }  = this.props.form;
+    const { getFieldValue, getFieldDecorator, getFieldError }  = this.props.form;
     const salaryRange = getFieldValue('salaryRange') || DEFAULT_SALARY_RANGE;
-    const { loading } = this.props;
+    const { loading, onValidateErrorClick } = this.props;
 
     return (
       <div className="form-container">
@@ -33,11 +43,29 @@ class CompleteProfileBoss extends React.Component {
           })(<AvatarPicker disabled={loading} />)}
         </List>
         <List renderHeader="Job Info">
-          {getFieldDecorator('position')(
-            <InputItem disabled={loading}>Position</InputItem>
+          {getFieldDecorator('position', {
+            validateTrigger: 'onBlur',
+            rules: [
+              { type: 'string', required: true },
+            ],
+          })(
+            <InputItem
+              disabled={loading}
+              error={getFieldError('position')}
+              onErrorClick={() => onValidateErrorClick(getFieldError('position'))}
+            >Position</InputItem>
           )}
-          {getFieldDecorator('companyName')(
-            <InputItem disabled={loading}>Company</InputItem>
+          {getFieldDecorator('companyName', {
+            validateTrigger: 'onBlur',
+            rules: [
+              { type: 'string', required: true, min: 2 },
+            ],
+          })(
+            <InputItem
+              disabled={loading}
+              error={getFieldError('companyName')}
+              onErrorClick={() => onValidateErrorClick(getFieldError('companyName'))}
+            >Company</InputItem>
           )}
         </List>
         <WingBlank size="lg">
@@ -70,6 +98,7 @@ class CompleteProfileBoss extends React.Component {
               rows={5}
               count={100}
               disabled={loading}
+              placeholder="Job's requirement, company's walfare, etc..."
             >Description</TextareaItem>
           )}
         </List>
@@ -77,7 +106,7 @@ class CompleteProfileBoss extends React.Component {
         <WingBlank>
           <LoadingButton
             type="primary"
-            onClick={this.props.onSubmit}
+            onClick={this.handleSubmit}
             loading={loading}
             normalText="Submit"
             loadingText="Submitting, please wait..."

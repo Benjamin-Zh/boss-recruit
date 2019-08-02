@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Toast } from 'antd-mobile';
 import renameWrapperComponent from '../../../../decorators/renameWrapperComponent';
 import * as actions from '../../actions';
 import { FORM_STATE_KEYS } from '../../constants';
@@ -30,8 +31,28 @@ export default userType => WrappedComponent => {
       this.props.updateFields(changedFields, userType);
     }
 
-    handleSubmit() {
-      this.props.submitProfile();
+    handleSubmit(form) {
+      form.validateFields(err => {
+        if (err) {
+          let errorMessage = 'input error, check and try again';
+
+          try {
+            const [firstErrorFieldKey] = Object.keys(err);
+            const [firstError] = err[firstErrorFieldKey].errors;
+
+            errorMessage = firstError.message;
+          } catch (err) { }
+
+          this.handleValidateErrorClick([errorMessage]);
+          return;
+        }
+
+        this.props.submitProfile();
+      });
+    }
+
+    handleValidateErrorClick(errorMessages) {
+      Toast.info(errorMessages[0], 3, null, false);
     }
 
     render() {
@@ -41,6 +62,7 @@ export default userType => WrappedComponent => {
           fields={this.props.completeProfileFormState}
           onFieldsChange={this.handleFieldsChange}
           onSubmit={this.handleSubmit}
+          onValidateErrorClick={this.handleValidateErrorClick}
           loading={this.props.completeProfileState.ui.loading}
         />
       );

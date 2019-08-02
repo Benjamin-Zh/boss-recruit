@@ -13,21 +13,43 @@ import { noop, createFormFields } from '../../../../utils';
 
 
 class CompleteProfileGenius extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit() {
+    this.props.onSubmit(this.props.form);
+  }
+
   render() {
-    const { getFieldDecorator }  = this.props.form;
-    const { loading } = this.props;
-    
+    const { getFieldDecorator, getFieldError }  = this.props.form;
+    const { loading, onValidateErrorClick } = this.props;
+
     return (
       <div className="form-container">
         <List renderHeader="Avatar">
           {getFieldDecorator('avatar', {
             getValueFromEvent: value => value,
             initialValue: 0,
+            rules: [
+              { type: 'number', required: true },
+            ],
           })(<AvatarPicker disabled={loading} />)}
         </List>
         <List renderHeader="Basic Info">
-          {getFieldDecorator('position')(
-            <InputItem disabled={loading}>Position</InputItem>
+          {getFieldDecorator('position', {
+            validateTrigger: 'onBlur',
+            rules: [
+              { type: 'string', required: true },
+            ],
+          })(
+            <InputItem
+              disabled={loading}
+              error={getFieldError('position')}
+              onErrorClick={() => onValidateErrorClick(getFieldError('position'))}
+            >Position</InputItem>
           )}
         </List>
         <List renderHeader="Description">
@@ -36,6 +58,7 @@ class CompleteProfileGenius extends React.Component {
               rows={5}
               count={100}
               disabled={loading}
+              placeholder="Your experience, your character, etc..."
             >Description</TextareaItem>
           )}
         </List>
@@ -43,7 +66,7 @@ class CompleteProfileGenius extends React.Component {
         <WingBlank>
           <LoadingButton
             type="primary"
-            onClick={this.props.onSubmit}
+            onClick={this.handleSubmit}
             loading={loading}
             normalText="Submit"
             loadingText="Submitting, please wait..."
@@ -58,6 +81,7 @@ class CompleteProfileGenius extends React.Component {
 
 CompleteProfileGenius.defaultProps = {
   onSubmit: noop,
+  onValidateErrorClick: noop,
 };
 
 const onFieldsChange = (props, ...args) => props.onFieldsChange(...args);
