@@ -46,7 +46,7 @@ class CompleteProfileBoss extends React.Component {
           {getFieldDecorator('position', {
             validateTrigger: 'onBlur',
             rules: [
-              { type: 'string', required: true },
+              { type: 'string', required: true, max: 20 },
             ],
           })(
             <InputItem
@@ -58,7 +58,7 @@ class CompleteProfileBoss extends React.Component {
           {getFieldDecorator('companyName', {
             validateTrigger: 'onBlur',
             rules: [
-              { type: 'string', required: true, min: 2 },
+              { type: 'string', required: true, min: 2, max: 20 },
             ],
           })(
             <InputItem

@@ -42,7 +42,7 @@ class CompleteProfileGenius extends React.Component {
           {getFieldDecorator('position', {
             validateTrigger: 'onBlur',
             rules: [
-              { type: 'string', required: true },
+              { type: 'string', required: true, max: 20 },
             ],
           })(
             <InputItem
