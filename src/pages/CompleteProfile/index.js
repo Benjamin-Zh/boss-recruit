@@ -36,9 +36,9 @@ class CompleteProfile extends React.Component {
       return <Redirect to="/" />;
     }
 
-    // if (userType !== pathType) {
-    //   return <Redirect to={`${this.props.match.path}/${userType}`} />;
-    // }
+    if (userType !== pathType) {
+      return <Redirect to={`${this.props.match.path}/${userType}`} />;
+    }
 
     return (
       <div className="page-container">

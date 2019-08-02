@@ -1,17 +1,17 @@
 import React from 'react';
+import { createForm } from 'rc-form';
 import {
   Flex,
   List,
   InputItem,
   TextareaItem,
-  Button,
   Range,
   WingBlank,
   WhiteSpace,
 } from 'antd-mobile';
-import { createForm } from 'rc-form';
+import LoadingButton from '../../../../components/LoadingButton';
 import AvatarPicker from '../AvatarPicker';
-import { noop, mapFieldsToRCFormFields } from '../../../../utils';
+import { noop, createFormFields } from '../../../../utils';
 
 import styles from './complete-profile-boss.module.scss';
 
@@ -19,28 +19,25 @@ import styles from './complete-profile-boss.module.scss';
 export const DEFAULT_SALARY_RANGE = [10, 20];
 
 class CompleteProfileBoss extends React.Component {
-  handleSubmitClick() {
-    this.props.onSubmit();
-  }
-
   render() {
     const { getFieldValue, getFieldDecorator }  = this.props.form;
     const salaryRange = getFieldValue('salaryRange') || DEFAULT_SALARY_RANGE;
+    const { loading } = this.props;
 
     return (
-      <div className={styles['form-container']}>
+      <div className="form-container">
         <List renderHeader="Avatar">
           {getFieldDecorator('avatar', {
             getValueFromEvent: value => value,
             initialValue: 0,
-          })(<AvatarPicker />)}
+          })(<AvatarPicker disabled={loading} />)}
         </List>
         <List renderHeader="Job Info">
           {getFieldDecorator('position')(
-            <InputItem>Position</InputItem>
+            <InputItem disabled={loading}>Position</InputItem>
           )}
           {getFieldDecorator('companyName')(
-            <InputItem>Company</InputItem>
+            <InputItem disabled={loading}>Company</InputItem>
           )}
         </List>
         <WingBlank size="lg">
@@ -54,6 +51,7 @@ class CompleteProfileBoss extends React.Component {
               pushable
               min={0}
               max={70}
+              disabled={loading}
               className={styles['salary-range']}
             />
           )}
@@ -67,19 +65,23 @@ class CompleteProfileBoss extends React.Component {
           </Flex>
         </WingBlank>
         <List renderHeader="Description">
-          {getFieldDecorator('count')(
+          {getFieldDecorator('description')(
             <TextareaItem
               rows={5}
               count={100}
+              disabled={loading}
             >Description</TextareaItem>
           )}
         </List>
         <WhiteSpace size="xl" />
         <WingBlank>
-          <Button
+          <LoadingButton
             type="primary"
-            onClick={this.handleSubmitClick}
-          >Submit</Button>
+            onClick={this.props.onSubmit}
+            loading={loading}
+            normalText="Submit"
+            loadingText="Submitting, please wait..."
+          />
         </WingBlank>
         <WhiteSpace size="xl" />
         <WhiteSpace size="xl" />
@@ -93,7 +95,7 @@ CompleteProfileBoss.defaultProps = {
 };
 
 const onFieldsChange = (props, ...args) => props.onFieldsChange(...args);
-const mapPropsToFields = props => mapFieldsToRCFormFields(props.fields);
+const mapPropsToFields = props => createFormFields(props.fields);
 
 export default createForm({
   onFieldsChange,

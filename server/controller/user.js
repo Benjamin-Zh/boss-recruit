@@ -3,7 +3,6 @@ const { getModel } = require('../model');
 const ERROR_TYPES = require('../constants/errorTypes');
 const { encryptPassword } = require('../utils');
 
-
 class UserController extends BaseController {
   constructor() {
     super();
@@ -11,6 +10,7 @@ class UserController extends BaseController {
     this.getUserInfo = this.getUserInfo.bind(this);
     this.register = this.register.bind(this);
     this.login = this.login.bind(this);
+    this.putProfile = this.putProfile.bind(this);
   }
 
   async getUserInfo(ctx, next) {
@@ -79,6 +79,12 @@ class UserController extends BaseController {
       this.fail(ctx, ERROR_TYPES.USER.INVALID_PASSWORD);
     }
 
+    await next();
+  }
+
+  async putProfile(ctx, next) {
+    console.log(ctx.request.body);
+    this.success(ctx, null);
     await next();
   }
 }

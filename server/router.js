@@ -11,6 +11,7 @@ router
   // user
   .get('/user', userController.getUserInfo)
   .post('/user/login', userController.login)
-  .post('/user/register', userController.register);
+  .post('/user/register', userController.register)
+  .put('/user/profile', userController.putProfile);
 
 module.exports = router;

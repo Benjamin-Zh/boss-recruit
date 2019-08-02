@@ -1,5 +1,5 @@
 import http from '../../utils/http';
-import { USER_INFO, LOGIN, REGISTER } from './constants';
+import { USER_INFO, LOGIN, REGISTER, PROFILE } from './constants';
 
 
 export function getUserInfo() {
@@ -12,4 +12,8 @@ export function login({ userName, password }) {
 
 export function register({ userName, password, userType }) {
   return http.post(REGISTER, { userName, password, userType });
+}
+
+export function putProfile(data) {
+  return http.put(PROFILE, data);
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Flex, List, InputItem, Button, WhiteSpace, WingBlank } from 'antd-mobile';
 import Icon from '../../components/Icon';
+import LoadingButton from '../../components/LoadingButton';
 import * as actions from './actions';
 import { setUserInfo } from '../../actions/user';
 import { formatError, getLoggedUserRedirectPath } from '../../utils';
@@ -107,12 +108,13 @@ class Login extends React.Component {
           }
           <WhiteSpace size="xl" />
           <WingBlank>
-            <Button
+            <LoadingButton
               type="primary"
               onClick={this.handleLoginClick}
               loading={ui.loading}
-              disabled={ui.loading}
-            >{ ui.loading ? 'Logging in, please wait...' : 'Submit' }</Button>
+              normalText="Login"
+              loadingText="Logging in, please wait..."
+            />
           </WingBlank>
           <WhiteSpace />
           <WingBlank>

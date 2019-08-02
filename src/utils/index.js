@@ -105,17 +105,17 @@ export function getComponetDisplayName(component) {
 }
 
 /**
- * Wrap To RC Form Fields
+ * Map To RC Form Fields
  * @param {Object} fields 
  */
-export function wrapToRCFormFields(fields) {
+export function mapToRCFormFields(fields) {
   return mapValues(fields, field => createFormField({ value: field }));
 }
 
 /**
- * Map Fields To RC Form Fields
+ * Create Form Fields
  * @param {Object} fields 
  */
-export function mapFieldsToRCFormFields(fields) {
+export function createFormFields(fields) {
   return mapValues(fields, field => createFormField(field));
 }

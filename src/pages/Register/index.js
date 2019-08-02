@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Flex, List, InputItem, Radio, Button, WhiteSpace, WingBlank } from 'antd-mobile';
 import Icon from '../../components/Icon';
 import RegisterSuccess from './components/RegisterSuccess';
+import LoadingButton from '../../components/LoadingButton';
 import * as actions from './actions';
 import { setUserInfo } from '../../actions/user';
 import { USER_TYPE } from '../../constants';
@@ -156,12 +157,13 @@ class Register extends React.Component {
           }
           <WhiteSpace size="xl" />
           <WingBlank>
-            <Button
+            <LoadingButton
               type="primary"
               loading={ui.loading}
-              disabled={ui.loading}
               onClick={this.handleRegisterClick}
-            >{ ui.loading ? 'Registering, please wait...' : 'Submit' }</Button>
+              normalText="Submit"
+              loadingText="Registering, please wait..."
+            />
           </WingBlank>
           <WhiteSpace size="xl" />
           <Flex justify="center" align="center">
