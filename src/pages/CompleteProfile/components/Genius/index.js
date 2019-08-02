@@ -23,7 +23,7 @@ class CompleteProfileGenius extends React.Component {
           {getFieldDecorator('avatar', {
             getValueFromEvent: value => value,
             initialValue: 0,
-          })(<AvatarPicker />)}
+          })(<AvatarPicker disabled={loading} />)}
         </List>
         <List renderHeader="Basic Info">
           {getFieldDecorator('position')(
