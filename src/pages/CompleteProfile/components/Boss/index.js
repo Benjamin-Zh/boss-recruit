@@ -4,24 +4,38 @@ import {
   List,
   InputItem,
   TextareaItem,
+  Button,
   Range,
   WingBlank,
   WhiteSpace,
 } from 'antd-mobile';
 import { createForm } from 'rc-form';
+import AvatarPicker from '../AvatarPicker';
 import styles from './complete-profile-boss.module.scss';
 
 
 const DEFAULT_SALARY_RANGE = [10, 20];
 
 class CompleteProfileBoss extends React.Component {
+  handleSubmitClick() {
+    console.log('submit');
+  }
+
   render() {
     const { getFieldProps, getFieldValue }  = this.props.form;
     const salaryRange = getFieldValue('salaryRange') || DEFAULT_SALARY_RANGE;
 
     return (
       <div className={styles['form-container']}>
-        <List renderHeader="Basic Info">
+        <List renderHeader="Avatar">
+          <AvatarPicker
+            {...getFieldProps('avatar', {
+              getValueFromEvent: value => value,
+              initialValue: 0,
+            })}
+          />
+        </List>
+        <List renderHeader="Job Info">
           <InputItem {...getFieldProps('position')}>Position</InputItem>
           <InputItem {...getFieldProps('companyName')}>Company</InputItem>
         </List>
@@ -52,6 +66,15 @@ class CompleteProfileBoss extends React.Component {
             count={100}
           >Description</TextareaItem>
         </List>
+        <WhiteSpace size="xl" />
+        <WingBlank>
+          <Button
+            type="primary"
+            onClick={this.handleSubmitClick}
+          >Submit</Button>
+        </WingBlank>
+        <WhiteSpace size="xl" />
+        <WhiteSpace size="xl" />
       </div>
     );
   }

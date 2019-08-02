@@ -2,6 +2,25 @@ import { USER_TYPE } from '../constants';
 
 
 /**
+ * Noop
+ */
+export function noop() {}
+
+/**
+ * Make Enum
+ * @param {Object} enumerable 
+ */
+export function makeEnum(enumerable) {
+  const res = { ...enumerable };
+
+  Object.entries(enumerable).forEach(([key, value]) => {
+    res[value] = key;
+  });
+
+  return res;
+}
+
+/**
  * Create Reducer
  * @param {Object} initialState 
  * @param {Object} handlers 
